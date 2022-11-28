@@ -1,12 +1,14 @@
 package vhandler
 
+import "vhandler/priority"
+
 type subHandler struct {
-	handlers      map[priorityId][]Handler
-	priorityOrder []priorityId
+	handlers      map[priority.Priority][]Handler
+	priorityOrder []priority.Priority
 }
 
 func newSubHandler() *subHandler {
-	return &subHandler{handlers: map[priorityId][]Handler{}}
+	return &subHandler{handlers: map[priority.Priority][]Handler{}}
 }
 
 func (s *subHandler) handle(f func(Handler)) {
@@ -17,9 +19,9 @@ func (s *subHandler) handle(f func(Handler)) {
 	}
 }
 
-func (s *subHandler) add(p priorityId, h Handler) {
-	s.priorityOrder = []priorityId{}
-	for _, pid := range priorityOrder {
+func (s *subHandler) add(p priority.Priority, h Handler) {
+	s.priorityOrder = []priority.Priority{}
+	for _, pid := range priority.Order {
 		if _, ok := s.handlers[pid]; ok {
 			s.priorityOrder = append(s.priorityOrder, pid)
 		}

@@ -8,6 +8,7 @@ import (
 	"github.com/go-gl/mathgl/mgl64"
 	"github.com/sirupsen/logrus"
 	"vhandler"
+	"vhandler/priority"
 )
 
 func main() {
@@ -24,15 +25,15 @@ func main() {
 	srv.Listen()
 	for {
 		srv.Accept(func(p *player.Player) {
-			setupHandler(p).Accept(p)
+			setupHandler(p).Set(p)
 		})
 	}
 }
 
-func setupHandler(p *player.Player) *vhandler.VHandler {
-	v := vhandler.New()
+func setupHandler(p *player.Player) *vhandler.Player {
+	v := vhandler.NewPlayer()
 
-	v.OnMove(vhandler.PriorityNormal, func(ctx *event.Context, newPos mgl64.Vec3, newYaw, newPitch float64) {
+	v.OnMove(priority.Normal, func(ctx *event.Context, newPos mgl64.Vec3, newYaw, newPitch float64) {
 		p.SendTip(fmt.Sprintf("X: %.2f Y: %.2f Z: %.2f\nYaw: %.0f Pitch: %.0f", newPos.X(), newPos.Y(), newPos.Z(), newYaw, newPitch))
 	})
 

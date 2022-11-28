@@ -3,35 +3,47 @@ package vhandler
 type handlerId uint8
 
 const (
-	ItemDropId handlerId = iota
-	MoveId
-	JumpId
-	TeleportId
-	ChangeWorldId
-	ToggleSprintId
-	ToggleSneakId
-	CommandExecutionId
-	TransferId
-	ChatId
-	SkinChangeId
-	StartBreakId
-	BlockBreakId
-	BlockPlaceId
-	BlockPickId
-	SignEditId
-	ItemPickupId
-	ItemUseId
-	ItemUseOnBlockId
-	ItemUseOnEntityId
-	ItemConsumeId
-	ItemDamageId
-	AttackEntityId
-	ExperienceGainId
-	PunchAirId
-	HurtId
-	HealId
-	FoodLossId
-	DeathId
-	RespawnId
-	QuitId
+	PlayerItemDropId handlerId = iota
+	PlayerMoveId
+	PlayerJumpId
+	PlayerTeleportId
+	PlayerChangeWorldId
+	PlayerToggleSprintId
+	PlayerToggleSneakId
+	PlayerCommandExecutionId
+	PlayerTransferId
+	PlayerChatId
+	PlayerSkinChangeId
+	PlayerStartBreakId
+	PlayerBlockBreakId
+	PlayerBlockPlaceId
+	PlayerBlockPickId
+	PlayerSignEditId
+	PlayerItemPickupId
+	PlayerItemUseId
+	PlayerItemUseOnBlockId
+	PlayerItemUseOnEntityId
+	PlayerItemConsumeId
+	PlayerItemDamageId
+	PlayerAttackEntityId
+	PlayerExperienceGainId
+	PlayerPunchAirId
+	PlayerHurtId
+	PlayerHealId
+	PlayerFoodLossId
+	PlayerDeathId
+	PlayerRespawnId
+	PlayerQuitId
+)
+
+const (
+	WorldLiquidFlowId handlerId = iota
+	WorldLiquidDecayId
+	WorldLiquidHardenId
+	WorldSoundId
+	WorldFireSpreadId
+	WorldBlockBurnId
+	WorldEntitySpawnId
+	WorldEntityDespawnId
+	WorldCloseId
 )
