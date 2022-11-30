@@ -1,6 +1,6 @@
 package vhandler
 
-import "vhandler/priority"
+import "github.com/venitynetwork/vhandler/priority"
 
 type subHandler struct {
 	handlers      map[priority.Priority][]Handler

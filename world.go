@@ -2,7 +2,7 @@ package vhandler
 
 import (
 	"github.com/df-mc/dragonfly/server/world"
-	"vhandler/priority"
+	"github.com/venitynetwork/vhandler/priority"
 )
 
 type World struct {

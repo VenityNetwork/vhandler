@@ -1,4 +1,4 @@
-module vhandler
+module github.com/venitynetwork/vhandler
 
 go 1.19
 

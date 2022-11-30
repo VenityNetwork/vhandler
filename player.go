@@ -2,7 +2,7 @@ package vhandler
 
 import (
 	"github.com/df-mc/dragonfly/server/player"
-	"vhandler/priority"
+	"github.com/venitynetwork/vhandler/priority"
 )
 
 type Player struct {

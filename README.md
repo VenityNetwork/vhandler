@@ -2,7 +2,13 @@
 
 A dragonfly library to add multiple player and world handler
 
-# examples
+## install
+
+```shell
+go get github.com/venitynetwork/vhandler
+```
+
+## examples
 
 <a href="/examples/movement_debug.go">movement_debug.go</a>:
 

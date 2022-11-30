@@ -7,8 +7,8 @@ import (
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/go-gl/mathgl/mgl64"
 	"github.com/sirupsen/logrus"
-	"vhandler"
-	"vhandler/priority"
+	"github.com/venitynetwork/vhandler"
+	"github.com/venitynetwork/vhandler/priority"
 )
 
 func main() {
