@@ -20,11 +20,12 @@ func (s *subHandler) handle(f func(Handler)) {
 }
 
 func (s *subHandler) add(p priority.Priority, h Handler) {
+	s.handlers[p] = append(s.handlers[p], h)
+
 	s.priorityOrder = []priority.Priority{}
 	for _, pid := range priority.Order {
 		if _, ok := s.handlers[pid]; ok {
 			s.priorityOrder = append(s.priorityOrder, pid)
 		}
 	}
-	s.handlers[p] = append(s.handlers[p], h)
 }
