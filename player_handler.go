@@ -35,11 +35,11 @@ func (p *PlayerHandler) HandleItemDrop(ctx *event.Context, e *entity.Item) {
 	})
 }
 
-type MoveHandler func(ctx *event.Context, newPos mgl64.Vec3, newYaw, newPitch float64)
+type PlayerMoveHandler func(ctx *event.Context, newPos mgl64.Vec3, newYaw, newPitch float64)
 
 func (p *PlayerHandler) HandleMove(ctx *event.Context, newPos mgl64.Vec3, newYaw, newPitch float64) {
 	p.ph.handlers[PlayerMoveId].handle(func(h Handler) {
-		h.(MoveHandler)(ctx, newPos, newYaw, newPitch)
+		h.(PlayerMoveHandler)(ctx, newPos, newYaw, newPitch)
 	})
 }
 

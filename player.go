@@ -1,6 +1,7 @@
 package vhandler
 
 import (
+	"errors"
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/venitynetwork/vhandler/priority"
 )
@@ -53,7 +54,7 @@ func (v *Player) OnItemDrop(p priority.Priority, h PlayerItemDropHandler) {
 	v.handlers[PlayerItemDropId].add(p, h)
 }
 
-func (v *Player) OnMove(p priority.Priority, h MoveHandler) {
+func (v *Player) OnMove(p priority.Priority, h PlayerMoveHandler) {
 	v.handlers[PlayerMoveId].add(p, h)
 }
 
@@ -175,4 +176,73 @@ func (v *Player) OnQuit(p priority.Priority, h PlayerQuitHandler) {
 
 func (v *Player) Set(p *player.Player) {
 	p.Handle(v.h)
+}
+
+func (v *Player) Remove(h Handler) error {
+	switch h.(type) {
+	case PlayerItemDropHandler:
+		return v.handlers[PlayerItemDropId].remove(h)
+	case PlayerMoveHandler:
+		return v.handlers[PlayerMoveId].remove(h)
+	case PlayerJumpHandler:
+		return v.handlers[PlayerJumpId].remove(h)
+	case PlayerTeleportHandler:
+		return v.handlers[PlayerTeleportId].remove(h)
+	case PlayerChangeWorldHandler:
+		return v.handlers[PlayerChangeWorldId].remove(h)
+	case PlayerToggleSprintHandler:
+		return v.handlers[PlayerToggleSprintId].remove(h)
+	case PlayerToggleSneakHandler:
+		return v.handlers[PlayerToggleSneakId].remove(h)
+	case PlayerCommandExecutionHandler:
+		return v.handlers[PlayerCommandExecutionId].remove(h)
+	case PlayerTransferHandler:
+		return v.handlers[PlayerTransferId].remove(h)
+	case PlayerChatHandler:
+		return v.handlers[PlayerChatId].remove(h)
+	case PlayerSkinChangeHandler:
+		return v.handlers[PlayerSkinChangeId].remove(h)
+	case PlayerStartBreakHandler:
+		return v.handlers[PlayerStartBreakId].remove(h)
+	case PlayerBlockBreakHandler:
+		return v.handlers[PlayerBlockBreakId].remove(h)
+	case PlayerBlockPlaceHandler:
+		return v.handlers[PlayerBlockPlaceId].remove(h)
+	case PlayerBlockPickHandler:
+		return v.handlers[PlayerBlockPickId].remove(h)
+	case PlayerSignEditHandler:
+		return v.handlers[PlayerSignEditId].remove(h)
+	case PlayerItemPickupHandler:
+		return v.handlers[PlayerItemPickupId].remove(h)
+	case PlayerItemUseHandler:
+		return v.handlers[PlayerItemUseId].remove(h)
+	case PlayerItemUseOnBlockHandler:
+		return v.handlers[PlayerItemUseOnBlockId].remove(h)
+	case PlayerItemUseOnEntityHandler:
+		return v.handlers[PlayerItemUseOnEntityId].remove(h)
+	case PlayerItemConsumeHandler:
+		return v.handlers[PlayerItemConsumeId].remove(h)
+	case PlayerItemDamageHandler:
+		return v.handlers[PlayerItemDamageId].remove(h)
+	case PlayerAttackEntityHandler:
+		return v.handlers[PlayerAttackEntityId].remove(h)
+	case PlayerExperienceGainHandler:
+		return v.handlers[PlayerExperienceGainId].remove(h)
+	case PlayerPunchAirHandler:
+		return v.handlers[PlayerPunchAirId].remove(h)
+	case PlayerHurtHandler:
+		return v.handlers[PlayerHurtId].remove(h)
+	case PlayerHealHandler:
+		return v.handlers[PlayerHealId].remove(h)
+	case PlayerFoodLossHandler:
+		return v.handlers[PlayerFoodLossId].remove(h)
+	case PlayerDeathHandler:
+		return v.handlers[PlayerDeathId].remove(h)
+	case PlayerRespawnHandler:
+		return v.handlers[PlayerRespawnId].remove(h)
+	case PlayerQuitHandler:
+		return v.handlers[PlayerQuitId].remove(h)
+	default:
+		return errors.New("invalid handler")
+	}
 }

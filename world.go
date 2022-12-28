@@ -1,6 +1,7 @@
 package vhandler
 
 import (
+	"errors"
 	"github.com/df-mc/dragonfly/server/world"
 	"github.com/venitynetwork/vhandler/priority"
 )
@@ -65,4 +66,29 @@ func (w *World) OnClose(p priority.Priority, h WorldCloseHandler) {
 
 func (w *World) Set(wo *world.World) {
 	wo.Handle(w.h)
+}
+
+func (w *World) Remove(h Handler) error {
+	switch h.(type) {
+	case WorldLiquidFlowHandler:
+		return w.handlers[WorldLiquidFlowId].remove(h)
+	case WorldLiquidDecayHandler:
+		return w.handlers[WorldLiquidDecayId].remove(h)
+	case WorldLiquidHardenHandler:
+		return w.handlers[WorldLiquidHardenId].remove(h)
+	case WorldSoundHandler:
+		return w.handlers[WorldSoundId].remove(h)
+	case WorldFireSpreadHandler:
+		return w.handlers[WorldFireSpreadId].remove(h)
+	case WorldBlockBurnHandler:
+		return w.handlers[WorldBlockBurnId].remove(h)
+	case WorldEntitySpawnHandler:
+		return w.handlers[WorldEntitySpawnId].remove(h)
+	case WorldEntityDespawnHandler:
+		return w.handlers[WorldEntityDespawnId].remove(h)
+	case WorldCloseHandler:
+		return w.handlers[WorldCloseId].remove(h)
+	default:
+		return errors.New("invalid handler")
+	}
 }
