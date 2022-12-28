@@ -9,7 +9,6 @@ go get github.com/venitynetwork/vhandler
 ```
 
 ## Usage
-
 ```go
 func acceptPlayer(p *player.Player) {
     handler := vhandler.NewPlayer() // create player handler
@@ -19,7 +18,13 @@ func acceptPlayer(p *player.Player) {
     }
 	
     // add move handler
-    v.OnMove(priority.Normal, moveHandler)
+    handler.OnMove(priority.Normal, moveHandler)
+	
+    // add existing handler interface
+    handler.Attach(priority.Normal, p.Handler())
+	
+    // remove handler interface
+    handler.Detach(p.Handler())
     
     // set player handler
     handler.Set(p)

@@ -1,7 +1,6 @@
 package vhandler
 
 import (
-	"errors"
 	"github.com/df-mc/dragonfly/server/world"
 	"github.com/venitynetwork/vhandler/priority"
 )
@@ -68,27 +67,66 @@ func (w *World) Set(wo *world.World) {
 	wo.Handle(w.h)
 }
 
-func (w *World) Remove(h Handler) error {
+func (w *World) Attach(p priority.Priority, wh world.Handler) {
+	nop := world.NopHandler{}
+	nopHandlers := w.getHandlers(nop)
+
+	handlers := w.getHandlers(wh)
+	for hId, handler := range handlers {
+		if handler == nopHandlers[hId] {
+			continue // ignore nop handler
+		}
+		w.handlers[hId].add(p, handler)
+	}
+}
+
+func (w *World) Detach(wh world.Handler) error {
+	handlers := w.getHandlers(wh)
+	for hId, handler := range handlers {
+		if err := w.handlers[hId].remove(handler); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (*World) getHandlers(h world.Handler) map[handlerId]Handler {
+	var handlers map[handlerId]Handler
+
+	handlers[WorldLiquidFlowId] = h.HandleLiquidFlow
+	handlers[WorldLiquidDecayId] = h.HandleLiquidDecay
+	handlers[WorldLiquidHardenId] = h.HandleLiquidHarden
+	handlers[WorldSoundId] = h.HandleSound
+	handlers[WorldFireSpreadId] = h.HandleFireSpread
+	handlers[WorldBlockBurnId] = h.HandleBlockBurn
+	handlers[WorldEntitySpawnId] = h.HandleEntitySpawn
+	handlers[WorldEntityDespawnId] = h.HandleEntityDespawn
+	handlers[WorldCloseId] = h.HandleClose
+
+	return handlers
+}
+
+func (*World) getHandlerId(h Handler) (handlerId, bool) {
 	switch h.(type) {
 	case WorldLiquidFlowHandler:
-		return w.handlers[WorldLiquidFlowId].remove(h)
+		return WorldLiquidFlowId, true
 	case WorldLiquidDecayHandler:
-		return w.handlers[WorldLiquidDecayId].remove(h)
+		return WorldLiquidDecayId, true
 	case WorldLiquidHardenHandler:
-		return w.handlers[WorldLiquidHardenId].remove(h)
+		return WorldLiquidHardenId, true
 	case WorldSoundHandler:
-		return w.handlers[WorldSoundId].remove(h)
+		return WorldSoundId, true
 	case WorldFireSpreadHandler:
-		return w.handlers[WorldFireSpreadId].remove(h)
+		return WorldFireSpreadId, true
 	case WorldBlockBurnHandler:
-		return w.handlers[WorldBlockBurnId].remove(h)
+		return WorldBlockBurnId, true
 	case WorldEntitySpawnHandler:
-		return w.handlers[WorldEntitySpawnId].remove(h)
+		return WorldEntitySpawnId, true
 	case WorldEntityDespawnHandler:
-		return w.handlers[WorldEntityDespawnId].remove(h)
+		return WorldEntityDespawnId, true
 	case WorldCloseHandler:
-		return w.handlers[WorldCloseId].remove(h)
+		return WorldCloseId, true
 	default:
-		return errors.New("invalid handler")
+		return 0, false
 	}
 }

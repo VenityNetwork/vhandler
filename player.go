@@ -178,71 +178,140 @@ func (v *Player) Set(p *player.Player) {
 	p.Handle(v.h)
 }
 
+func (v *Player) Attach(p priority.Priority, h player.Handler) {
+	nop := player.NopHandler{}
+	nopHandlers := v.getHandlers(nop)
+
+	handlers := v.getHandlers(h)
+	for hId, handler := range handlers {
+		if handler == nopHandlers[hId] {
+			continue // ignore nop handler
+		}
+		v.handlers[hId].add(p, handler)
+	}
+}
+
+func (v *Player) Detach(h player.Handler) error {
+	handlers := v.getHandlers(h)
+	for hId, handler := range handlers {
+		if err := v.handlers[hId].remove(handler); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (v *Player) Remove(h Handler) error {
+	hId, ok := v.getHandlerId(h)
+	if !ok {
+		return errors.New("invalid handler")
+	}
+	return v.handlers[hId].remove(h)
+}
+
+func (*Player) getHandlers(h player.Handler) map[handlerId]Handler {
+	var handlers map[handlerId]Handler
+
+	handlers[PlayerItemDropId] = h.HandleItemDrop
+	handlers[PlayerMoveId] = h.HandleMove
+	handlers[PlayerJumpId] = h.HandleJump
+	handlers[PlayerTeleportId] = h.HandleTeleport
+	handlers[PlayerChangeWorldId] = h.HandleChangeWorld
+	handlers[PlayerToggleSprintId] = h.HandleToggleSprint
+	handlers[PlayerToggleSneakId] = h.HandleToggleSneak
+	handlers[PlayerCommandExecutionId] = h.HandleCommandExecution
+	handlers[PlayerTransferId] = h.HandleTransfer
+	handlers[PlayerChatId] = h.HandleChat
+	handlers[PlayerSkinChangeId] = h.HandleSkinChange
+	handlers[PlayerStartBreakId] = h.HandleStartBreak
+	handlers[PlayerBlockBreakId] = h.HandleBlockBreak
+	handlers[PlayerBlockPlaceId] = h.HandleBlockPlace
+	handlers[PlayerBlockPickId] = h.HandleBlockPick
+	handlers[PlayerSignEditId] = h.HandleSignEdit
+	handlers[PlayerItemPickupId] = h.HandleItemPickup
+	handlers[PlayerItemUseId] = h.HandleItemUse
+	handlers[PlayerItemUseOnBlockId] = h.HandleItemUseOnBlock
+	handlers[PlayerItemUseOnEntityId] = h.HandleItemUseOnEntity
+	handlers[PlayerItemConsumeId] = h.HandleItemConsume
+	handlers[PlayerItemDamageId] = h.HandleItemDamage
+	handlers[PlayerAttackEntityId] = h.HandleAttackEntity
+	handlers[PlayerExperienceGainId] = h.HandleExperienceGain
+	handlers[PlayerPunchAirId] = h.HandlePunchAir
+	handlers[PlayerHurtId] = h.HandleHurt
+	handlers[PlayerHealId] = h.HandleHeal
+	handlers[PlayerFoodLossId] = h.HandleFoodLoss
+	handlers[PlayerDeathId] = h.HandleDeath
+	handlers[PlayerRespawnId] = h.HandleRespawn
+	handlers[PlayerQuitId] = h.HandleQuit
+
+	return handlers
+}
+
+func (v *Player) getHandlerId(h Handler) (handlerId, bool) {
 	switch h.(type) {
 	case PlayerItemDropHandler:
-		return v.handlers[PlayerItemDropId].remove(h)
+		return PlayerItemDropId, true
 	case PlayerMoveHandler:
-		return v.handlers[PlayerMoveId].remove(h)
+		return PlayerMoveId, true
 	case PlayerJumpHandler:
-		return v.handlers[PlayerJumpId].remove(h)
+		return PlayerJumpId, true
 	case PlayerTeleportHandler:
-		return v.handlers[PlayerTeleportId].remove(h)
+		return PlayerTeleportId, true
 	case PlayerChangeWorldHandler:
-		return v.handlers[PlayerChangeWorldId].remove(h)
+		return PlayerChangeWorldId, true
 	case PlayerToggleSprintHandler:
-		return v.handlers[PlayerToggleSprintId].remove(h)
+		return PlayerToggleSprintId, true
 	case PlayerToggleSneakHandler:
-		return v.handlers[PlayerToggleSneakId].remove(h)
+		return PlayerToggleSneakId, true
 	case PlayerCommandExecutionHandler:
-		return v.handlers[PlayerCommandExecutionId].remove(h)
+		return PlayerCommandExecutionId, true
 	case PlayerTransferHandler:
-		return v.handlers[PlayerTransferId].remove(h)
+		return PlayerTransferId, true
 	case PlayerChatHandler:
-		return v.handlers[PlayerChatId].remove(h)
+		return PlayerChatId, true
 	case PlayerSkinChangeHandler:
-		return v.handlers[PlayerSkinChangeId].remove(h)
+		return PlayerSkinChangeId, true
 	case PlayerStartBreakHandler:
-		return v.handlers[PlayerStartBreakId].remove(h)
+		return PlayerStartBreakId, true
 	case PlayerBlockBreakHandler:
-		return v.handlers[PlayerBlockBreakId].remove(h)
+		return PlayerBlockBreakId, true
 	case PlayerBlockPlaceHandler:
-		return v.handlers[PlayerBlockPlaceId].remove(h)
+		return PlayerBlockPlaceId, true
 	case PlayerBlockPickHandler:
-		return v.handlers[PlayerBlockPickId].remove(h)
+		return PlayerBlockPickId, true
 	case PlayerSignEditHandler:
-		return v.handlers[PlayerSignEditId].remove(h)
+		return PlayerSignEditId, true
 	case PlayerItemPickupHandler:
-		return v.handlers[PlayerItemPickupId].remove(h)
+		return PlayerItemPickupId, true
 	case PlayerItemUseHandler:
-		return v.handlers[PlayerItemUseId].remove(h)
+		return PlayerItemUseId, true
 	case PlayerItemUseOnBlockHandler:
-		return v.handlers[PlayerItemUseOnBlockId].remove(h)
+		return PlayerItemUseOnBlockId, true
 	case PlayerItemUseOnEntityHandler:
-		return v.handlers[PlayerItemUseOnEntityId].remove(h)
+		return PlayerItemUseOnEntityId, true
 	case PlayerItemConsumeHandler:
-		return v.handlers[PlayerItemConsumeId].remove(h)
+		return PlayerItemConsumeId, true
 	case PlayerItemDamageHandler:
-		return v.handlers[PlayerItemDamageId].remove(h)
+		return PlayerItemDamageId, true
 	case PlayerAttackEntityHandler:
-		return v.handlers[PlayerAttackEntityId].remove(h)
+		return PlayerAttackEntityId, true
 	case PlayerExperienceGainHandler:
-		return v.handlers[PlayerExperienceGainId].remove(h)
+		return PlayerExperienceGainId, true
 	case PlayerPunchAirHandler:
-		return v.handlers[PlayerPunchAirId].remove(h)
+		return PlayerPunchAirId, true
 	case PlayerHurtHandler:
-		return v.handlers[PlayerHurtId].remove(h)
+		return PlayerHurtId, true
 	case PlayerHealHandler:
-		return v.handlers[PlayerHealId].remove(h)
+		return PlayerHealId, true
 	case PlayerFoodLossHandler:
-		return v.handlers[PlayerFoodLossId].remove(h)
+		return PlayerFoodLossId, true
 	case PlayerDeathHandler:
-		return v.handlers[PlayerDeathId].remove(h)
+		return PlayerDeathId, true
 	case PlayerRespawnHandler:
-		return v.handlers[PlayerRespawnId].remove(h)
+		return PlayerRespawnId, true
 	case PlayerQuitHandler:
-		return v.handlers[PlayerQuitId].remove(h)
+		return PlayerQuitId, true
 	default:
-		return errors.New("invalid handler")
+		return 0, false
 	}
 }
