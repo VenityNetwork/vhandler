@@ -9,8 +9,7 @@ import (
 type subHandler struct {
 	mu sync.Mutex
 
-	handlers      map[priority.Priority][]Handler
-	priorityOrder []priority.Priority
+	handlers map[priority.Priority][]Handler
 }
 
 func newSubHandler() *subHandler {
@@ -18,7 +17,7 @@ func newSubHandler() *subHandler {
 }
 
 func (s *subHandler) handle(f func(Handler)) {
-	for _, id := range s.priorityOrder {
+	for _, id := range priority.Order {
 		for _, h := range s.handlers[id] {
 			f(h)
 		}
@@ -28,9 +27,8 @@ func (s *subHandler) handle(f func(Handler)) {
 func (s *subHandler) add(p priority.Priority, h Handler) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	
+
 	s.handlers[p] = append(s.handlers[p], h)
-	s.reorderPriority()
 }
 
 func (s *subHandler) remove(h Handler) error {
@@ -56,18 +54,8 @@ func (s *subHandler) remove(h Handler) error {
 	}
 
 	if deleted {
-		s.reorderPriority()
 		return nil
 	}
 
 	return errors.New("failed to delete handler: handler not found")
-}
-
-func (s *subHandler) reorderPriority() {
-	s.priorityOrder = []priority.Priority{}
-	for _, pid := range priority.Order {
-		if _, ok := s.handlers[pid]; ok {
-			s.priorityOrder = append(s.priorityOrder, pid)
-		}
-	}
 }
