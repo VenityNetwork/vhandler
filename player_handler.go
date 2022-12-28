@@ -123,11 +123,11 @@ func (p *PlayerHandler) HandleStartBreak(ctx *event.Context, pos cube.Pos) {
 	})
 }
 
-type PlayerBlockBreakHandler func(ctx *event.Context, pos cube.Pos, drops *[]item.Stack)
+type PlayerBlockBreakHandler func(ctx *event.Context, pos cube.Pos, drops *[]item.Stack, xp *int)
 
-func (p *PlayerHandler) HandleBlockBreak(ctx *event.Context, pos cube.Pos, drops *[]item.Stack) {
+func (p *PlayerHandler) HandleBlockBreak(ctx *event.Context, pos cube.Pos, drops *[]item.Stack, xp *int) {
 	p.ph.handlers[PlayerBlockBreakId].handle(func(h Handler) {
-		h.(PlayerBlockBreakHandler)(ctx, pos, drops)
+		h.(PlayerBlockBreakHandler)(ctx, pos, drops, xp)
 	})
 }
 
@@ -243,9 +243,9 @@ func (p *PlayerHandler) HandleHeal(ctx *event.Context, health *float64, src worl
 	})
 }
 
-type PlayerFoodLossHandler func(ctx *event.Context, from, to int)
+type PlayerFoodLossHandler func(ctx *event.Context, from int, to *int)
 
-func (p *PlayerHandler) HandleFoodLoss(ctx *event.Context, from, to int) {
+func (p *PlayerHandler) HandleFoodLoss(ctx *event.Context, from int, to *int) {
 	p.ph.handlers[PlayerFoodLossId].handle(func(h Handler) {
 		h.(PlayerFoodLossHandler)(ctx, from, to)
 	})
