@@ -1,6 +1,7 @@
 package vhandler
 
 import (
+	"errors"
 	"github.com/df-mc/dragonfly/server/world"
 	"github.com/venitynetwork/vhandler/priority"
 )
@@ -88,6 +89,14 @@ func (v *World) Detach(wh world.Handler) error {
 		}
 	}
 	return nil
+}
+
+func (v *World) Remove(h Handler) error {
+	hId, ok := v.getHandlerId(h)
+	if !ok {
+		return errors.New("invalid handler")
+	}
+	return v.handlers[hId].remove(h)
 }
 
 func (*World) getHandlers(h world.Handler) map[handlerId]Handler {
