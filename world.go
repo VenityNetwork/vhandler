@@ -27,63 +27,63 @@ func NewWorld() *World {
 	return v
 }
 
-func (w *World) OnLiquidFlow(p priority.Priority, h WorldLiquidFlowHandler) {
-	w.handlers[WorldLiquidFlowId].add(p, h)
+func (v *World) OnLiquidFlow(p priority.Priority, h WorldLiquidFlowHandler) {
+	v.handlers[WorldLiquidFlowId].add(p, h)
 }
 
-func (w *World) OnLiquidDecay(p priority.Priority, h WorldLiquidDecayHandler) {
-	w.handlers[WorldLiquidDecayId].add(p, h)
+func (v *World) OnLiquidDecay(p priority.Priority, h WorldLiquidDecayHandler) {
+	v.handlers[WorldLiquidDecayId].add(p, h)
 }
 
-func (w *World) OnLiquidHarden(p priority.Priority, h WorldLiquidHardenHandler) {
-	w.handlers[WorldLiquidHardenId].add(p, h)
+func (v *World) OnLiquidHarden(p priority.Priority, h WorldLiquidHardenHandler) {
+	v.handlers[WorldLiquidHardenId].add(p, h)
 }
 
-func (w *World) OnSound(p priority.Priority, h WorldSoundHandler) {
-	w.handlers[WorldSoundId].add(p, h)
+func (v *World) OnSound(p priority.Priority, h WorldSoundHandler) {
+	v.handlers[WorldSoundId].add(p, h)
 }
 
-func (w *World) OnFireSpread(p priority.Priority, h WorldFireSpreadHandler) {
-	w.handlers[WorldFireSpreadId].add(p, h)
+func (v *World) OnFireSpread(p priority.Priority, h WorldFireSpreadHandler) {
+	v.handlers[WorldFireSpreadId].add(p, h)
 }
 
-func (w *World) OnBlockBurn(p priority.Priority, h WorldBlockBurnHandler) {
-	w.handlers[WorldBlockBurnId].add(p, h)
+func (v *World) OnBlockBurn(p priority.Priority, h WorldBlockBurnHandler) {
+	v.handlers[WorldBlockBurnId].add(p, h)
 }
 
-func (w *World) OnEntitySpawn(p priority.Priority, h WorldEntitySpawnHandler) {
-	w.handlers[WorldEntitySpawnId].add(p, h)
+func (v *World) OnEntitySpawn(p priority.Priority, h WorldEntitySpawnHandler) {
+	v.handlers[WorldEntitySpawnId].add(p, h)
 }
 
-func (w *World) OnEntityDespawn(p priority.Priority, h WorldEntityDespawnHandler) {
-	w.handlers[WorldEntityDespawnId].add(p, h)
+func (v *World) OnEntityDespawn(p priority.Priority, h WorldEntityDespawnHandler) {
+	v.handlers[WorldEntityDespawnId].add(p, h)
 }
 
-func (w *World) OnClose(p priority.Priority, h WorldCloseHandler) {
-	w.handlers[WorldCloseId].add(p, h)
+func (v *World) OnClose(p priority.Priority, h WorldCloseHandler) {
+	v.handlers[WorldCloseId].add(p, h)
 }
 
-func (w *World) Set(wo *world.World) {
-	wo.Handle(w.h)
+func (v *World) Set(wo *world.World) {
+	wo.Handle(v.h)
 }
 
-func (w *World) Attach(p priority.Priority, wh world.Handler) {
+func (v *World) Attach(p priority.Priority, wh world.Handler) {
 	nop := world.NopHandler{}
-	nopHandlers := w.getHandlers(nop)
+	nopHandlers := v.getHandlers(nop)
 
-	handlers := w.getHandlers(wh)
+	handlers := v.getHandlers(wh)
 	for hId, handler := range handlers {
 		if handler == nopHandlers[hId] {
 			continue // ignore nop handler
 		}
-		w.handlers[hId].add(p, handler)
+		v.handlers[hId].add(p, handler)
 	}
 }
 
-func (w *World) Detach(wh world.Handler) error {
-	handlers := w.getHandlers(wh)
+func (v *World) Detach(wh world.Handler) error {
+	handlers := v.getHandlers(wh)
 	for hId, handler := range handlers {
-		if err := w.handlers[hId].remove(handler); err != nil {
+		if err := v.handlers[hId].remove(handler); err != nil {
 			return err
 		}
 	}
