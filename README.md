@@ -1,70 +1,34 @@
 # vhandler
 
-A dragonfly library to add multiple player and world handler
+A dragonfly functional event handler.
 
-## Install
+For now, the documentation is not complete. Please refer to the source code for more information.
 
-```shell
+## Installation
+
+```bash
 go get github.com/venitynetwork/vhandler
 ```
 
 ## Usage
+
 ```go
-func acceptPlayer(p *player.Player) {
-    handler := vhandler.NewPlayer() // create player handler
-	
-    moveHandler := func(ctx *event.Context, newPos mgl64.Vec3, newYaw, newPitch float64) {
-        p.SendTip(fmt.Sprintf("X: %.2f Y: %.2f Z: %.2f\nYaw: %.0f Pitch: %.0f", newPos.X(), newPos.Y(), newPos.Z(), newYaw, newPitch))
-    }
-	
-    // add move handler
-    handler.OnMove(priority.Normal, moveHandler)
-	
-    // add existing handler interface
-    handler.Attach(priority.Normal, p.Handler())
-	
-    // remove handler interface
-    handler.Detach(p.Handler())
+func setupHandler() *vhandler.PlayerHandlers {
+    h := vhandler.NewPlayerHandlers()
+    h.OnAttackEntity(func (p *player.Player, ctx *event.Context, e world.Entity, force *float64, height *float64, critical *bool) {
+        fmt.Printf("%s attacked %v\n", p.Name(), e)
+    }, vhandler.PriorityNormal)
     
-    // set player handler
-    handler.Set(p)
-
-    // remove move handler
-    handler.Remove(moveHandler)
-}
-```
-
-## Examples
-
-<a href="/examples/movement_debug.go">movement_debug.go</a>:
-
-```go
-func main() {
-	log := logrus.New()
-	log.Formatter = &logrus.TextFormatter{ForceColors: true}
-	log.Level = logrus.DebugLevel
-
-	cfg := server.DefaultConfig()
-	srvCfg, err := cfg.Config(log)
-	if err != nil {
-		log.Fatal(err)
-	}
-	srv := srvCfg.New()
-	srv.Listen()
-	for {
-		srv.Accept(func(p *player.Player) {
-			setupHandler(p).Set(p)
-		})
-	}
+    h.OnBlockBreak(func (p *player.Player, ctx *event.Context, pos cube.Pos, drops *[]item.Stack, xp *int) {
+        fmt.Printf("%s broke a block at %v\n", p.Name(), pos)
+    }, vhandler.PriorityLow)
+	
+    return h
 }
 
-func setupHandler(p *player.Player) *vhandler.Player {
-	v := vhandler.NewPlayer()
-
-	v.OnMove(priority.Normal, func(ctx *event.Context, newPos mgl64.Vec3, newYaw, newPitch float64) {
-		p.SendTip(fmt.Sprintf("X: %.2f Y: %.2f Z: %.2f\nYaw: %.0f Pitch: %.0f", newPos.X(), newPos.Y(), newPos.Z(), newYaw, newPitch))
-	})
-
-	return v
+func setPlayerHandler(p *player.Player){
+    h := setupHandler()
+    // Note: h can be reused for multiple players
+    vhandler.HandlePlayer(p, h)
 }
 ```
