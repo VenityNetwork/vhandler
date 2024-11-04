@@ -13,6 +13,21 @@ type WorldHandlers struct {
 	closeHandlers         []*handlerWrapper[WorldHandleCloseFunc]
 }
 
+func NewWorldHandlers() *WorldHandlers {
+	return &WorldHandlers{
+		liquidFlowHandlers:    make([]*handlerWrapper[WorldHandleLiquidFlowFunc], 0),
+		liquidDecayHandlers:   make([]*handlerWrapper[WorldHandleLiquidDecayFunc], 0),
+		liquidHardenHandlers:  make([]*handlerWrapper[WorldHandleLiquidHardenFunc], 0),
+		soundHandlers:         make([]*handlerWrapper[WorldHandleSoundFunc], 0),
+		fireSpreadHandlers:    make([]*handlerWrapper[WorldHandleFireSpreadFunc], 0),
+		blockBurnHandlers:     make([]*handlerWrapper[WorldHandleBlockBurnFunc], 0),
+		cropTrampleHandlers:   make([]*handlerWrapper[WorldHandleCropTrampleFunc], 0),
+		entitySpawnHandlers:   make([]*handlerWrapper[WorldHandleEntitySpawnFunc], 0),
+		entityDespawnHandlers: make([]*handlerWrapper[WorldHandleEntityDespawnFunc], 0),
+		closeHandlers:         make([]*handlerWrapper[WorldHandleCloseFunc], 0),
+	}
+}
+
 func (h *WorldHandlers) OnLiquidFlow(handler WorldHandleLiquidFlowFunc, priority Priority) {
 	h.liquidFlowHandlers = append(h.liquidFlowHandlers, &handlerWrapper[WorldHandleLiquidFlowFunc]{priority, handler})
 	sortHandlers(h.liquidFlowHandlers)

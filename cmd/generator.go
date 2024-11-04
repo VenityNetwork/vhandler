@@ -114,6 +114,27 @@ func generateHandlerList(name string, handlers []Handler) string {
 	}
 	str.WriteString("}\n\n")
 
+	str.WriteString("func New")
+	str.WriteString(name)
+	str.WriteString("Handlers() *")
+	str.WriteString(name)
+	str.WriteString("Handlers {\n")
+	str.WriteString("\treturn &")
+	str.WriteString(name)
+	str.WriteString("Handlers{\n")
+	for _, handler := range handlers {
+		fn := handler.FuncName[len("Handle"):]
+		fn = strings.ToLower(fn[:1]) + fn[1:]
+		str.WriteString("\t\t")
+		str.WriteString(fn)
+		str.WriteString("Handlers: make([]*handlerWrapper[")
+		str.WriteString(name)
+		str.WriteString(handler.FuncName)
+		str.WriteString("Func], 0),\n")
+	}
+	str.WriteString("\t}\n")
+	str.WriteString("}\n\n")
+
 	// implement Add method
 	for _, handler := range handlers {
 		fn2 := handler.FuncName[len("Handle"):]

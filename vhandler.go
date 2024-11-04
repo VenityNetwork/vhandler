@@ -5,14 +5,6 @@ import (
 	"github.com/df-mc/dragonfly/server/world"
 )
 
-func NewPlayerHandlers() *PlayerHandlers {
-	return &PlayerHandlers{}
-}
-
-func NewWorldHandlers() *WorldHandlers {
-	return &WorldHandlers{}
-}
-
 func HandlePlayer(p *player.Player, h *PlayerHandlers) {
 	p.Handle(&PlayerNativeBridgeHandler{p: p, h: h})
 }

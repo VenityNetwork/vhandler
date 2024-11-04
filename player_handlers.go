@@ -37,6 +37,45 @@ type PlayerHandlers struct {
 	diagnosticsHandlers      []*handlerWrapper[PlayerHandleDiagnosticsFunc]
 }
 
+func NewPlayerHandlers() *PlayerHandlers {
+	return &PlayerHandlers{
+		moveHandlers:             make([]*handlerWrapper[PlayerHandleMoveFunc], 0),
+		jumpHandlers:             make([]*handlerWrapper[PlayerHandleJumpFunc], 0),
+		teleportHandlers:         make([]*handlerWrapper[PlayerHandleTeleportFunc], 0),
+		changeWorldHandlers:      make([]*handlerWrapper[PlayerHandleChangeWorldFunc], 0),
+		toggleSprintHandlers:     make([]*handlerWrapper[PlayerHandleToggleSprintFunc], 0),
+		toggleSneakHandlers:      make([]*handlerWrapper[PlayerHandleToggleSneakFunc], 0),
+		chatHandlers:             make([]*handlerWrapper[PlayerHandleChatFunc], 0),
+		foodLossHandlers:         make([]*handlerWrapper[PlayerHandleFoodLossFunc], 0),
+		healHandlers:             make([]*handlerWrapper[PlayerHandleHealFunc], 0),
+		hurtHandlers:             make([]*handlerWrapper[PlayerHandleHurtFunc], 0),
+		deathHandlers:            make([]*handlerWrapper[PlayerHandleDeathFunc], 0),
+		respawnHandlers:          make([]*handlerWrapper[PlayerHandleRespawnFunc], 0),
+		skinChangeHandlers:       make([]*handlerWrapper[PlayerHandleSkinChangeFunc], 0),
+		fireExtinguishHandlers:   make([]*handlerWrapper[PlayerHandleFireExtinguishFunc], 0),
+		startBreakHandlers:       make([]*handlerWrapper[PlayerHandleStartBreakFunc], 0),
+		blockBreakHandlers:       make([]*handlerWrapper[PlayerHandleBlockBreakFunc], 0),
+		blockPlaceHandlers:       make([]*handlerWrapper[PlayerHandleBlockPlaceFunc], 0),
+		blockPickHandlers:        make([]*handlerWrapper[PlayerHandleBlockPickFunc], 0),
+		itemUseHandlers:          make([]*handlerWrapper[PlayerHandleItemUseFunc], 0),
+		itemUseOnBlockHandlers:   make([]*handlerWrapper[PlayerHandleItemUseOnBlockFunc], 0),
+		itemUseOnEntityHandlers:  make([]*handlerWrapper[PlayerHandleItemUseOnEntityFunc], 0),
+		itemConsumeHandlers:      make([]*handlerWrapper[PlayerHandleItemConsumeFunc], 0),
+		attackEntityHandlers:     make([]*handlerWrapper[PlayerHandleAttackEntityFunc], 0),
+		experienceGainHandlers:   make([]*handlerWrapper[PlayerHandleExperienceGainFunc], 0),
+		punchAirHandlers:         make([]*handlerWrapper[PlayerHandlePunchAirFunc], 0),
+		signEditHandlers:         make([]*handlerWrapper[PlayerHandleSignEditFunc], 0),
+		lecternPageTurnHandlers:  make([]*handlerWrapper[PlayerHandleLecternPageTurnFunc], 0),
+		itemDamageHandlers:       make([]*handlerWrapper[PlayerHandleItemDamageFunc], 0),
+		itemPickupHandlers:       make([]*handlerWrapper[PlayerHandleItemPickupFunc], 0),
+		itemDropHandlers:         make([]*handlerWrapper[PlayerHandleItemDropFunc], 0),
+		transferHandlers:         make([]*handlerWrapper[PlayerHandleTransferFunc], 0),
+		commandExecutionHandlers: make([]*handlerWrapper[PlayerHandleCommandExecutionFunc], 0),
+		quitHandlers:             make([]*handlerWrapper[PlayerHandleQuitFunc], 0),
+		diagnosticsHandlers:      make([]*handlerWrapper[PlayerHandleDiagnosticsFunc], 0),
+	}
+}
+
 func (h *PlayerHandlers) OnMove(handler PlayerHandleMoveFunc, priority Priority) {
 	h.moveHandlers = append(h.moveHandlers, &handlerWrapper[PlayerHandleMoveFunc]{priority, handler})
 	sortHandlers(h.moveHandlers)
