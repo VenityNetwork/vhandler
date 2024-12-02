@@ -22,6 +22,7 @@ type PlayerHandlers struct {
 	itemUseHandlers          []*handlerWrapper[PlayerHandleItemUseFunc]
 	itemUseOnBlockHandlers   []*handlerWrapper[PlayerHandleItemUseOnBlockFunc]
 	itemUseOnEntityHandlers  []*handlerWrapper[PlayerHandleItemUseOnEntityFunc]
+	itemReleaseHandlers      []*handlerWrapper[PlayerHandleItemReleaseFunc]
 	itemConsumeHandlers      []*handlerWrapper[PlayerHandleItemConsumeFunc]
 	attackEntityHandlers     []*handlerWrapper[PlayerHandleAttackEntityFunc]
 	experienceGainHandlers   []*handlerWrapper[PlayerHandleExperienceGainFunc]
@@ -30,6 +31,7 @@ type PlayerHandlers struct {
 	lecternPageTurnHandlers  []*handlerWrapper[PlayerHandleLecternPageTurnFunc]
 	itemDamageHandlers       []*handlerWrapper[PlayerHandleItemDamageFunc]
 	itemPickupHandlers       []*handlerWrapper[PlayerHandleItemPickupFunc]
+	heldSlotChangeHandlers   []*handlerWrapper[PlayerHandleHeldSlotChangeFunc]
 	itemDropHandlers         []*handlerWrapper[PlayerHandleItemDropFunc]
 	transferHandlers         []*handlerWrapper[PlayerHandleTransferFunc]
 	commandExecutionHandlers []*handlerWrapper[PlayerHandleCommandExecutionFunc]
@@ -60,6 +62,7 @@ func NewPlayerHandlers() *PlayerHandlers {
 		itemUseHandlers:          make([]*handlerWrapper[PlayerHandleItemUseFunc], 0),
 		itemUseOnBlockHandlers:   make([]*handlerWrapper[PlayerHandleItemUseOnBlockFunc], 0),
 		itemUseOnEntityHandlers:  make([]*handlerWrapper[PlayerHandleItemUseOnEntityFunc], 0),
+		itemReleaseHandlers:      make([]*handlerWrapper[PlayerHandleItemReleaseFunc], 0),
 		itemConsumeHandlers:      make([]*handlerWrapper[PlayerHandleItemConsumeFunc], 0),
 		attackEntityHandlers:     make([]*handlerWrapper[PlayerHandleAttackEntityFunc], 0),
 		experienceGainHandlers:   make([]*handlerWrapper[PlayerHandleExperienceGainFunc], 0),
@@ -68,6 +71,7 @@ func NewPlayerHandlers() *PlayerHandlers {
 		lecternPageTurnHandlers:  make([]*handlerWrapper[PlayerHandleLecternPageTurnFunc], 0),
 		itemDamageHandlers:       make([]*handlerWrapper[PlayerHandleItemDamageFunc], 0),
 		itemPickupHandlers:       make([]*handlerWrapper[PlayerHandleItemPickupFunc], 0),
+		heldSlotChangeHandlers:   make([]*handlerWrapper[PlayerHandleHeldSlotChangeFunc], 0),
 		itemDropHandlers:         make([]*handlerWrapper[PlayerHandleItemDropFunc], 0),
 		transferHandlers:         make([]*handlerWrapper[PlayerHandleTransferFunc], 0),
 		commandExecutionHandlers: make([]*handlerWrapper[PlayerHandleCommandExecutionFunc], 0),
@@ -181,6 +185,11 @@ func (h *PlayerHandlers) OnItemUseOnEntity(handler PlayerHandleItemUseOnEntityFu
 	sortHandlers(h.itemUseOnEntityHandlers)
 }
 
+func (h *PlayerHandlers) OnItemRelease(handler PlayerHandleItemReleaseFunc, priority Priority) {
+	h.itemReleaseHandlers = append(h.itemReleaseHandlers, &handlerWrapper[PlayerHandleItemReleaseFunc]{priority, handler})
+	sortHandlers(h.itemReleaseHandlers)
+}
+
 func (h *PlayerHandlers) OnItemConsume(handler PlayerHandleItemConsumeFunc, priority Priority) {
 	h.itemConsumeHandlers = append(h.itemConsumeHandlers, &handlerWrapper[PlayerHandleItemConsumeFunc]{priority, handler})
 	sortHandlers(h.itemConsumeHandlers)
@@ -219,6 +228,11 @@ func (h *PlayerHandlers) OnItemDamage(handler PlayerHandleItemDamageFunc, priori
 func (h *PlayerHandlers) OnItemPickup(handler PlayerHandleItemPickupFunc, priority Priority) {
 	h.itemPickupHandlers = append(h.itemPickupHandlers, &handlerWrapper[PlayerHandleItemPickupFunc]{priority, handler})
 	sortHandlers(h.itemPickupHandlers)
+}
+
+func (h *PlayerHandlers) OnHeldSlotChange(handler PlayerHandleHeldSlotChangeFunc, priority Priority) {
+	h.heldSlotChangeHandlers = append(h.heldSlotChangeHandlers, &handlerWrapper[PlayerHandleHeldSlotChangeFunc]{priority, handler})
+	sortHandlers(h.heldSlotChangeHandlers)
 }
 
 func (h *PlayerHandlers) OnItemDrop(handler PlayerHandleItemDropFunc, priority Priority) {

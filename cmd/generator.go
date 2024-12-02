@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -66,6 +67,9 @@ func main() {
 	_ = os.WriteFile("world_handler_func_types.go", []byte(generateFuncTypes("World", "*world.World", "w", worldHandlers)), 0644)
 	_ = os.WriteFile("player_handlers.go", []byte(generateHandlerList("Player", handlers)), 0644)
 	_ = os.WriteFile("world_handlers.go", []byte(generateHandlerList("World", worldHandlers)), 0644)
+
+	_ = exec.Command("goimports", "-l", "-w", ".").Run()
+	_ = exec.Command("gofmt", "-s", "-w", ".").Run()
 }
 
 func generateFuncTypes(prefix string, param1 string, param1Name string, handlers []Handler) string {
@@ -76,16 +80,30 @@ func generateFuncTypes(prefix string, param1 string, param1Name string, handlers
 		str.WriteString(prefix)
 		str.WriteString(handler.FuncName)
 		str.WriteString("Func func(")
-		str.WriteString(param1Name)
-		str.WriteString(" ")
-		str.WriteString(param1)
-		if len(handler.Args) > 0 {
-			str.WriteString(", ")
-		}
+		//str.WriteString(param1Name)
+		//str.WriteString(" ")
+		//str.WriteString(param1)
+		//if len(handler.Args) > 0 {
+		//	str.WriteString(", ")
+		//}
 		for i, arg := range handler.Args {
 			str.WriteString(arg.Name)
 			str.WriteString(" ")
-			str.WriteString(arg.Type)
+			if arg.Name == "ctx" || arg.Name == "context" {
+				str.WriteString("*")
+				str.WriteString(strings.ToLower(prefix))
+				str.WriteString(".Context")
+			} else {
+				if arg.Type == "*Player" {
+					str.WriteString("*player.Player")
+				} else if arg.Type == "*World" {
+					str.WriteString("*world.World")
+				} else if arg.Type == "*Tx" {
+					str.WriteString("*world.Tx")
+				} else {
+					str.WriteString(arg.Type)
+				}
+			}
 			if i != len(handler.Args)-1 {
 				str.WriteString(", ")
 			}
@@ -202,7 +220,21 @@ func generateBridge(name string, nativeHandler string, param1 string, param1Name
 		for i, arg := range handler.Args {
 			str.WriteString(arg.Name)
 			str.WriteString(" ")
-			str.WriteString(arg.Type)
+			if arg.Name == "ctx" || arg.Name == "context" {
+				str.WriteString("*")
+				str.WriteString(strings.ToLower(name))
+				str.WriteString(".Context")
+			} else {
+				if arg.Type == "*Player" {
+					str.WriteString("*player.Player")
+				} else if arg.Type == "*World" {
+					str.WriteString("*world.World")
+				} else if arg.Type == "*Tx" {
+					str.WriteString("*world.Tx")
+				} else {
+					str.WriteString(arg.Type)
+				}
+			}
 			if i != len(handler.Args)-1 {
 				str.WriteString(", ")
 			}
@@ -214,12 +246,12 @@ func generateBridge(name string, nativeHandler string, param1 string, param1Name
 		fn = strings.ToLower(fn[:1]) + fn[1:]
 		str.WriteString(fn)
 		str.WriteString("Handlers {\n")
-		str.WriteString("\t\thandler.h")
-		str.WriteString("(h.")
-		str.WriteString(param1Name)
-		if len(handler.Args) > 0 {
-			str.WriteString(", ")
-		}
+		str.WriteString("\t\thandler.h(")
+		//str.WriteString("(h.")
+		//str.WriteString(param1Name)
+		//if len(handler.Args) > 0 {
+		//	str.WriteString(", ")
+		//}
 		for i, arg := range handler.Args {
 			str.WriteString(arg.Name)
 			if i != len(handler.Args)-1 {

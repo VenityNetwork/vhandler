@@ -8,6 +8,7 @@ type WorldHandlers struct {
 	fireSpreadHandlers    []*handlerWrapper[WorldHandleFireSpreadFunc]
 	blockBurnHandlers     []*handlerWrapper[WorldHandleBlockBurnFunc]
 	cropTrampleHandlers   []*handlerWrapper[WorldHandleCropTrampleFunc]
+	leavesDecayHandlers   []*handlerWrapper[WorldHandleLeavesDecayFunc]
 	entitySpawnHandlers   []*handlerWrapper[WorldHandleEntitySpawnFunc]
 	entityDespawnHandlers []*handlerWrapper[WorldHandleEntityDespawnFunc]
 	closeHandlers         []*handlerWrapper[WorldHandleCloseFunc]
@@ -22,6 +23,7 @@ func NewWorldHandlers() *WorldHandlers {
 		fireSpreadHandlers:    make([]*handlerWrapper[WorldHandleFireSpreadFunc], 0),
 		blockBurnHandlers:     make([]*handlerWrapper[WorldHandleBlockBurnFunc], 0),
 		cropTrampleHandlers:   make([]*handlerWrapper[WorldHandleCropTrampleFunc], 0),
+		leavesDecayHandlers:   make([]*handlerWrapper[WorldHandleLeavesDecayFunc], 0),
 		entitySpawnHandlers:   make([]*handlerWrapper[WorldHandleEntitySpawnFunc], 0),
 		entityDespawnHandlers: make([]*handlerWrapper[WorldHandleEntityDespawnFunc], 0),
 		closeHandlers:         make([]*handlerWrapper[WorldHandleCloseFunc], 0),
@@ -61,6 +63,11 @@ func (h *WorldHandlers) OnBlockBurn(handler WorldHandleBlockBurnFunc, priority P
 func (h *WorldHandlers) OnCropTrample(handler WorldHandleCropTrampleFunc, priority Priority) {
 	h.cropTrampleHandlers = append(h.cropTrampleHandlers, &handlerWrapper[WorldHandleCropTrampleFunc]{priority, handler})
 	sortHandlers(h.cropTrampleHandlers)
+}
+
+func (h *WorldHandlers) OnLeavesDecay(handler WorldHandleLeavesDecayFunc, priority Priority) {
+	h.leavesDecayHandlers = append(h.leavesDecayHandlers, &handlerWrapper[WorldHandleLeavesDecayFunc]{priority, handler})
+	sortHandlers(h.leavesDecayHandlers)
 }
 
 func (h *WorldHandlers) OnEntitySpawn(handler WorldHandleEntitySpawnFunc, priority Priority) {
